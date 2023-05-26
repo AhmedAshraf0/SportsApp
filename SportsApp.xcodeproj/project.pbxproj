@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		EB7042DF2A20D230000D6E78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7042DE2A20D230000D6E78 /* AppDelegate.swift */; };
 		EB7042E12A20D230000D6E78 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7042E02A20D230000D6E78 /* SceneDelegate.swift */; };
-		EB7042E32A20D230000D6E78 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7042E22A20D230000D6E78 /* ViewController.swift */; };
+		EB7042E32A20D230000D6E78 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7042E22A20D230000D6E78 /* HomeViewController.swift */; };
 		EB7042E62A20D230000D6E78 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB7042E42A20D230000D6E78 /* Main.storyboard */; };
 		EB7042E92A20D230000D6E78 /* SportsApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EB7042E72A20D230000D6E78 /* SportsApp.xcdatamodeld */; };
 		EB7042EB2A20D233000D6E78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB7042EA2A20D233000D6E78 /* Assets.xcassets */; };
@@ -17,6 +17,7 @@
 		EB7042F92A20D233000D6E78 /* SportsAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7042F82A20D233000D6E78 /* SportsAppTests.swift */; };
 		EB7043032A20D233000D6E78 /* SportsAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7043022A20D233000D6E78 /* SportsAppUITests.swift */; };
 		EB7043052A20D233000D6E78 /* SportsAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7043042A20D233000D6E78 /* SportsAppUITestsLaunchTests.swift */; };
+		EB7043122A20DFDD000D6E78 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7043112A20DFDD000D6E78 /* FavoritesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +41,7 @@
 		EB7042DB2A20D230000D6E78 /* SportsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB7042DE2A20D230000D6E78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB7042E02A20D230000D6E78 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EB7042E22A20D230000D6E78 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		EB7042E22A20D230000D6E78 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		EB7042E52A20D230000D6E78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EB7042E82A20D230000D6E78 /* SportsApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SportsApp.xcdatamodel; sourceTree = "<group>"; };
 		EB7042EA2A20D233000D6E78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 		EB7042FE2A20D233000D6E78 /* SportsAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportsAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB7043022A20D233000D6E78 /* SportsAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAppUITests.swift; sourceTree = "<group>"; };
 		EB7043042A20D233000D6E78 /* SportsAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		EB7043112A20DFDD000D6E78 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,12 +105,13 @@
 			children = (
 				EB7042DE2A20D230000D6E78 /* AppDelegate.swift */,
 				EB7042E02A20D230000D6E78 /* SceneDelegate.swift */,
-				EB7042E22A20D230000D6E78 /* ViewController.swift */,
+				EB7042E22A20D230000D6E78 /* HomeViewController.swift */,
 				EB7042E42A20D230000D6E78 /* Main.storyboard */,
 				EB7042EA2A20D233000D6E78 /* Assets.xcassets */,
 				EB7042EC2A20D233000D6E78 /* LaunchScreen.storyboard */,
 				EB7042EF2A20D233000D6E78 /* Info.plist */,
 				EB7042E72A20D230000D6E78 /* SportsApp.xcdatamodeld */,
+				EB7043112A20DFDD000D6E78 /* FavoritesViewController.swift */,
 			);
 			path = SportsApp;
 			sourceTree = "<group>";
@@ -261,9 +264,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB7042E32A20D230000D6E78 /* ViewController.swift in Sources */,
+				EB7042E32A20D230000D6E78 /* HomeViewController.swift in Sources */,
 				EB7042DF2A20D230000D6E78 /* AppDelegate.swift in Sources */,
 				EB7042E92A20D230000D6E78 /* SportsApp.xcdatamodeld in Sources */,
+				EB7043122A20DFDD000D6E78 /* FavoritesViewController.swift in Sources */,
 				EB7042E12A20D230000D6E78 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
