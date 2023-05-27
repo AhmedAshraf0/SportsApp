@@ -10,6 +10,7 @@ import UIKit
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
+    private var homeViewModel : HomeControllerViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,12 +19,22 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         collectionView.collectionViewLayout = UICollectionViewFlowLayout()
         
+        homeViewModel = HomeControllerViewModel()
+        
         //Setting up tabBar
         title = "Home"
         tabBarController?.tabBar.items?.first?.image = UIImage(systemName: "house.fill")
         tabBarController?.tabBar.items?.last?.title = "Favorites"
         tabBarController?.tabBar.items?.last?.image = UIImage(systemName: "heart.fill")
         
+        homeViewModel.bindViewModelToController = { leagues in
+            print("data received \(leagues.count)")
+            //upgrade ui and navigate to new screen with the list of leagues
+            let leaguesViewController = self.storyboard?.instantiateViewController(withIdentifier: "LeaguesViewController") as! LeaguesViewController
+            
+            leaguesViewController.setupLeagueView(leagues)
+            self.navigationController?.pushViewController(leaguesViewController, animated: true)
+        }
     }
 
 
@@ -67,5 +78,6 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout{
 extension HomeViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(sports[indexPath.row])
+        homeViewModel.requestFromApi()
     }
 }
