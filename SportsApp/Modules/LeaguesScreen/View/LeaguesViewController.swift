@@ -12,6 +12,8 @@ class LeaguesViewController: UIViewController {
     private var leagues: [League]!
     private var filteredDataArray: [League] = []
     
+    private var leaguesViewModel: LeaguesControllerViewModel!
+    
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -21,6 +23,19 @@ class LeaguesViewController: UIViewController {
         print("hi")
         tableView.dataSource = self
         tableView.delegate = self
+        
+        leaguesViewModel = LeaguesControllerViewModel()
+        
+        leaguesViewModel.bindViewModelToController = {
+            fixtures in
+            print("data received \(fixtures.count)")
+            
+            let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
+            
+            detailsViewController.setupDetailsView(fixtures)
+            
+            self.navigationController?.pushViewController(detailsViewController, animated: true)
+        }
     }
     
     func setupLeagueView(_ leagues: [League]!){
@@ -47,6 +62,11 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
             cell.imageView?.image = UIImage(named: "placeholder")
         }
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("pressed at \(indexPath.row)")
+        leaguesViewModel.requestFromApi(filteredDataArray[indexPath.row].leagueKey)
     }
 }
 

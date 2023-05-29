@@ -8,6 +8,8 @@
 import UIKit
 
 class DetailsViewController: UIViewController {
+    private var upcomingFixtures : [Fixture]!
+    
     @IBOutlet weak var collectionView: UICollectionView!
     let randomDates: [String] = [
         "05-12", "06-20", "03-05", "09-10", "11-15",
@@ -35,6 +37,10 @@ class DetailsViewController: UIViewController {
         super.viewDidLoad()
         collectionView.dataSource = self
         collectionView.delegate = self
+    }
+    
+    func setupDetailsView(_ fixtures: [Fixture]){
+        self.upcomingFixtures = fixtures
     }
 
 }
