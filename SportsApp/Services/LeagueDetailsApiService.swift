@@ -12,7 +12,9 @@ class LeagueDetailsApiService {
     private let apiKey = "06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
     
     func requestFromApi(endPoint: String, from: String, to: String, leagueId: Int, completion: @escaping ([Fixture]) -> ()) {
-        let urlString = "\(baseUrl)\(endPoint)/?met=Fixtures&APIkey=\(apiKey)&from=\(from)&to=\(to)&leagueId=\(leagueId)"
+        let urlString = "\(baseUrl)football/?met=\(endPoint)&APIkey=\(apiKey)&from=\(from)&to=\(to)&leagueId=\(leagueId)"
+        
+        print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL")
             return
@@ -34,7 +36,6 @@ class LeagueDetailsApiService {
                 let response = try decoder.decode(LeagueDetailsResponse.self, from: data)
                 DispatchQueue.main.async {
                     completion(response.result)
-                    print(response.result.count)
                 }
             } catch {
                 print("JSON decoding error: \(error.localizedDescription)")

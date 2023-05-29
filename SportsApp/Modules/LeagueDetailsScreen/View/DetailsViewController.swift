@@ -8,10 +8,12 @@
 import UIKit
 
 class DetailsViewController: UIViewController {
-    private var upcomingFixtures : [Fixture]!
+    private var fixtures : [Fixture]!
+    private var upcomingFixtures: [Fixture] = []
+    private var resultsOfFixtures: [Fixture] = []
     
     @IBOutlet weak var collectionView: UICollectionView!
-    let randomDates: [String] = [
+    /*let randomDates: [String] = [
         "05-12", "06-20", "03-05", "09-10", "11-15",
         "02-28", "07-01", "12-25", "08-18", "04-30"
     ]
@@ -32,7 +34,7 @@ class DetailsViewController: UIViewController {
     let randomTimes: [String] = [
         "12:00", "15:30", "18:45", "20:15", "13:20",
         "16:50", "19:00", "21:30", "14:10", "17:55"
-    ]
+    ]*/
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.dataSource = self
@@ -40,7 +42,18 @@ class DetailsViewController: UIViewController {
     }
     
     func setupDetailsView(_ fixtures: [Fixture]){
-        self.upcomingFixtures = fixtures
+        self.fixtures = fixtures
+        
+        //filtering fixtures
+        print("filtering started")
+        for fixture in fixtures {
+            if fixture.eventStatus.isEmpty{//means upcoming match
+                upcomingFixtures.append(fixture)
+            }else if fixture.eventStatus == "Finished"{
+                resultsOfFixtures.append(fixture)
+            }
+        }
+        print("filtering finished")
     }
 
 }
@@ -48,19 +61,20 @@ class DetailsViewController: UIViewController {
 
 extension DetailsViewController : UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return randomDates.count
+        return upcomingFixtures.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DetailsCollectionViewCell", for: indexPath) as! DetailsCollectionViewCell
         cell.layer.cornerRadius = 25.0
         
-        cell.homeTeamLabel.text = randomFootballTeams[indexPath.row]
-        cell.awayTeamLabel.text = randomTeams[indexPath.row]
-        cell.labelTime.text = randomTimes[indexPath.row]
-        cell.labelDate.text = randomDates[indexPath.row]
-        cell.awayTeamImg.image = UIImage(named: "football")
-        cell.homeTeamImg.image = UIImage(named: "basketball")
+        cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventHomeTeam
+        cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
+        cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
+        cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate
+        cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+        cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
         
         return cell
     }
