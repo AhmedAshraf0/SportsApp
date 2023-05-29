@@ -12,6 +12,7 @@ class DetailsViewController: UIViewController {
     private var upcomingFixtures: [Fixture] = []
     private var resultsOfFixtures: [Fixture] = []
     
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     /*let randomDates: [String] = [
         "05-12", "06-20", "03-05", "09-10", "11-15",
@@ -39,6 +40,9 @@ class DetailsViewController: UIViewController {
         super.viewDidLoad()
         collectionView.dataSource = self
         collectionView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UINib(nibName: "ResultTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
     }
     
     func setupDetailsView(_ fixtures: [Fixture]){
@@ -86,4 +90,23 @@ extension DetailsViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("ouch")
     }
+}
+
+extension DetailsViewController: UITableViewDataSource , UITableViewDelegate{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return resultsOfFixtures.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ResultTableViewCell
+        cell.homeTeam.text = resultsOfFixtures[indexPath.row].eventHomeTeam
+        cell.awayTeam.text = resultsOfFixtures[indexPath.row].eventAwayTeam
+        cell.matchScore.text = resultsOfFixtures[indexPath.row].eventFTResult
+        cell.homeImg?.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+        cell.awayImg?.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+        
+        return cell
+    }
+    
+    
 }

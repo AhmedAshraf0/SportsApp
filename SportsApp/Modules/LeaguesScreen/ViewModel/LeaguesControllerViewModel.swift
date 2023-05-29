@@ -17,6 +17,7 @@ class LeaguesControllerViewModel{
     }
     
     var bindViewModelToController: ((_ fixtures: [Fixture]) -> ()) = {fixtures in }
+    var newScreenTitle: String!
     
     init(){
         self.networkService = LeagueDetailsApiService()

@@ -33,6 +33,7 @@ class LeaguesViewController: UIViewController {
             let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
             
             detailsViewController.setupDetailsView(fixtures)
+            detailsViewController.title = self.leaguesViewModel.newScreenTitle
             
             self.navigationController?.pushViewController(detailsViewController, animated: true)
         }
@@ -67,6 +68,7 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("pressed at \(indexPath.row)")
         leaguesViewModel.requestFromApi(filteredDataArray[indexPath.row].leagueKey)
+        leaguesViewModel.newScreenTitle = filteredDataArray[indexPath.row].leagueName
     }
 }
 
