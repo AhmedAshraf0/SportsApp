@@ -32,17 +32,12 @@ class LeaguesViewController: UIViewController {
 
 extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // Return the number of rows in the section
-        // Example: return yourDataArray.count
         return filteredDataArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Dequeue or create a cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
-        // Configure the cell
-        // Example: cell.textLabel?.text = yourDataArray[indexPath.row]
         cell.textLabel?.text = filteredDataArray[indexPath.row].leagueName
         cell.textLabel?.textAlignment = .center
         
@@ -53,8 +48,6 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
         }
         return cell
     }
-    
-    // Implement other UITableViewDataSource and UITableViewDelegate methods as needed
 }
 
 extension LeaguesViewController: UISearchBarDelegate {

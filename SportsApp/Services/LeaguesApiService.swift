@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NetworkService{
+class LeaguesApiService{
     let endPoint = "football"
     let sportsUrl = "https://apiv2.allsportsapi.com/football/?met=Leagues&APIkey=06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
     
@@ -32,7 +32,6 @@ class NetworkService{
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(LeagueResponse.self, from: data)
                 DispatchQueue.main.async {
-                    // Handle the decoded response here
                     completion(response.result)
 //                    print(response.result.count)
                 }

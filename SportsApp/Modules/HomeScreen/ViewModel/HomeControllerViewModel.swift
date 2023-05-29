@@ -8,7 +8,7 @@
 import Foundation
 
 class HomeControllerViewModel{
-    private var networkService: NetworkService!
+    private var networkService: LeaguesApiService!
     
     private(set) var leagueData : [League]! {
             didSet {
@@ -19,7 +19,7 @@ class HomeControllerViewModel{
     var bindViewModelToController : ((_ leagues: [League]) -> ()) = {leagues in }
     
     init() {
-        self.networkService = NetworkService()
+        self.networkService = LeaguesApiService()
     }
     
     func requestFromApi(){
