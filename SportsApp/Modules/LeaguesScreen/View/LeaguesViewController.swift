@@ -27,12 +27,11 @@ class LeaguesViewController: UIViewController {
         leaguesViewModel = LeaguesControllerViewModel()
         
         leaguesViewModel.bindViewModelToController = {
-            fixtures in
-            print("data received \(fixtures.count)")
-            
+            fixtures, teams in
+            print("teams received \(teams.count)")
             let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
             
-            detailsViewController.setupDetailsView(fixtures)
+            detailsViewController.setupDetailsView(fixtures,teams)
             detailsViewController.title = self.leaguesViewModel.newScreenTitle
             
             self.navigationController?.pushViewController(detailsViewController, animated: true)
@@ -43,7 +42,6 @@ class LeaguesViewController: UIViewController {
         self.leagues = leagues
         filteredDataArray = leagues
     }
-    
 }
 
 extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {

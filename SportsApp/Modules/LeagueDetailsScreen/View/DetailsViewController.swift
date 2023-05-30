@@ -11,9 +11,11 @@ class DetailsViewController: UIViewController {
     private var fixtures : [Fixture]!
     private var upcomingFixtures: [Fixture] = []
     private var resultsOfFixtures: [Fixture] = []
+    private var teams: [Team] = []
     
+    @IBOutlet weak var teamsCollectionView: UICollectionView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var upcomingCollectionView: UICollectionView!
     /*let randomDates: [String] = [
         "05-12", "06-20", "03-05", "09-10", "11-15",
         "02-28", "07-01", "12-25", "08-18", "04-30"
@@ -38,15 +40,19 @@ class DetailsViewController: UIViewController {
     ]*/
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        upcomingCollectionView.dataSource = self
+        upcomingCollectionView.delegate = self
+        teamsCollectionView.dataSource = self
+        teamsCollectionView.delegate = self
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UINib(nibName: "ResultTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+        teamsCollectionView.register(UINib(nibName: "TeamCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TeamCollectionViewCell")
     }
     
-    func setupDetailsView(_ fixtures: [Fixture]){
+    func setupDetailsView(_ fixtures: [Fixture] , _ teams: [Team]){
         self.fixtures = fixtures
+        self.teams = teams
         
         //filtering fixtures
         print("filtering started")
@@ -65,22 +71,42 @@ class DetailsViewController: UIViewController {
 
 extension DetailsViewController : UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return upcomingFixtures.count
+        switch collectionView{
+        case upcomingCollectionView:
+            return upcomingFixtures.count
+        case teamsCollectionView:
+            return teams.count
+        default:
+            print("default!")
+            return 0
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DetailsCollectionViewCell", for: indexPath) as! DetailsCollectionViewCell
-        cell.layer.cornerRadius = 25.0
-        
-        cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventHomeTeam
-        cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
-        cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
-        cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate
-        cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
-        cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
-        
-        return cell
+        switch collectionView{
+        case upcomingCollectionView:
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DetailsCollectionViewCell", for: indexPath) as! DetailsCollectionViewCell
+            cell.layer.cornerRadius = 25.0
+            cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventHomeTeam
+            cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
+            cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
+            cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate
+            cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+            cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+            return cell
+            
+        case teamsCollectionView:
+            let cell = teamsCollectionView.dequeueReusableCell(withReuseIdentifier: "TeamCollectionViewCell", for: indexPath) as! TeamCollectionViewCell
+            cell.teamLabel.text = teams[indexPath.row].teamName
+            cell.teamImg.sd_setImage(with: URL(string: teams[indexPath.row].teamLogo!), placeholderImage: UIImage(named: "placeholder"))
+            return cell
+            
+        default:
+            return UICollectionViewCell()
+        }
     }
     
     

@@ -36,7 +36,7 @@ class LeaguesApiService{
 //                    print(response.result.count)
                 }
             } catch {
-                print("JSON decoding error: \(error.localizedDescription)")
+                print("JSON decoding error in LeaguesApiService: \(error.localizedDescription)")
             }
         }
         

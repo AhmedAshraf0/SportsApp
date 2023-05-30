@@ -9,18 +9,23 @@ import Foundation
 
 class LeaguesControllerViewModel{
     private var networkService: LeagueDetailsApiService
+    private var teamsNetworkService: TeamsApiService
     
-    private(set) var leagueDetailsData: [Fixture]!{
+    private var leagueDetailsData: [Fixture]!
+    
+    private(set) var teamsData: [Team]!{
         didSet{
-            self.bindViewModelToController(leagueDetailsData)
+            self.bindViewModelToController(leagueDetailsData,teamsData)
         }
     }
     
-    var bindViewModelToController: ((_ fixtures: [Fixture]) -> ()) = {fixtures in }
+    var bindViewModelToController: ((_ fixtures: [Fixture],_ teams: [Team]) -> ()) = {fixtures, teams in }
+    
     var newScreenTitle: String!
     
     init(){
         self.networkService = LeagueDetailsApiService()
+        self.teamsNetworkService = TeamsApiService()
     }
     
     func requestFromApi(_ leagueId: Int){
@@ -32,6 +37,20 @@ class LeaguesControllerViewModel{
             print("fixtures: \(fixtures.count)")
             
             self.leagueDetailsData = fixtures
+            self.requestTeamsFromApi(leagueId)
         })
+    }
+    
+    func requestTeamsFromApi(_ leagueId: Int){
+        teamsNetworkService.requestFromApi(endPoint: "Teams", leagueId: leagueId, completion: {
+            (teams) in
+            print("teams: \(teams.count)")
+            
+            self.teamsData = teams
+        })
+    }
+    
+    func getLeagueDetailsData() -> [Fixture] {
+            return leagueDetailsData
     }
 }
