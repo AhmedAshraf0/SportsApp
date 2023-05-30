@@ -28,10 +28,12 @@ class LeaguesViewController: UIViewController {
         
         leaguesViewModel.bindViewModelToController = {
             fixtures, teams in
-            print("teams received \(teams.count)")
+            print("teams received \(teams?.count)")
             let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
             
-            detailsViewController.setupDetailsView(fixtures,teams)
+            if !(fixtures?.isEmpty ?? true) && !(teams?.isEmpty ?? true){
+                detailsViewController.setupDetailsView(fixtures!,teams!)
+            }
             detailsViewController.title = self.leaguesViewModel.newScreenTitle
             
             self.navigationController?.pushViewController(detailsViewController, animated: true)
@@ -65,7 +67,7 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("pressed at \(indexPath.row)")
-        leaguesViewModel.requestFromApi(filteredDataArray[indexPath.row].leagueKey)
+        leaguesViewModel.requestFromApi(filteredDataArray[indexPath.row].leagueKey!)
         leaguesViewModel.newScreenTitle = filteredDataArray[indexPath.row].leagueName
     }
 }
@@ -89,7 +91,7 @@ extension LeaguesViewController: UISearchBarDelegate {
             filteredDataArray = leagues.filter { item in
                 
                 let lowercasedSearchText = searchText.lowercased()
-                let itemText = item.leagueName.lowercased()
+                let itemText = item.leagueName!.lowercased()
                 return itemText.contains(lowercasedSearchText)
             }
         }

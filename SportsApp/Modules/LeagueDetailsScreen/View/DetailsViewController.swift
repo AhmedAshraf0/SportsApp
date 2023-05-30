@@ -13,6 +13,9 @@ class DetailsViewController: UIViewController {
     private var resultsOfFixtures: [Fixture] = []
     private var teams: [Team] = []
     
+    @IBOutlet weak var labelTeams: UILabel!
+    @IBOutlet weak var labelUpcoming: UILabel!
+    @IBOutlet weak var labelResults: UILabel!
     @IBOutlet weak var teamsCollectionView: UICollectionView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var upcomingCollectionView: UICollectionView!
@@ -48,6 +51,16 @@ class DetailsViewController: UIViewController {
         tableView.delegate = self
         tableView.register(UINib(nibName: "ResultTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
         teamsCollectionView.register(UINib(nibName: "TeamCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "TeamCollectionViewCell")
+        
+        if upcomingFixtures.isEmpty{
+            labelUpcoming.isHidden = false
+        }
+        if resultsOfFixtures.isEmpty{
+            labelResults.isHidden = false
+        }
+        if teams.isEmpty{
+            labelTeams.isHidden = false
+        }
     }
     
     func setupDetailsView(_ fixtures: [Fixture] , _ teams: [Team]){
@@ -56,8 +69,8 @@ class DetailsViewController: UIViewController {
         
         //filtering fixtures
         print("filtering started")
-        for fixture in fixtures {
-            if fixture.eventStatus.isEmpty{//means upcoming match
+        for fixture in fixtures.reversed() {
+            if fixture.eventStatus!.isEmpty{//means upcoming match
                 upcomingFixtures.append(fixture)
             }else if fixture.eventStatus == "Finished"{
                 resultsOfFixtures.append(fixture)
@@ -94,8 +107,8 @@ extension DetailsViewController : UICollectionViewDataSource{
             cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
             cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
             cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate
-            cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
-            cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+            cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo!), placeholderImage: UIImage(named: "placeholder"))
+            cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo!), placeholderImage: UIImage(named: "placeholder"))
             return cell
             
         case teamsCollectionView:
@@ -114,7 +127,19 @@ extension DetailsViewController : UICollectionViewDataSource{
 
 extension DetailsViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("ouch")
+        if collectionView == teamsCollectionView{
+            print("ouch")
+            //create object of new screen
+            //has four arrarys which should be filtered here before
+            //navigate
+            
+            let teamDetailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "TeamDetailsViewController") as! TeamDetailsViewController
+            
+            teamDetailsViewController.setupTeamView(teams[indexPath.row])
+            teamDetailsViewController.title = teams[indexPath.row].teamName
+            
+            self.navigationController?.pushViewController(teamDetailsViewController, animated: true)
+        }
     }
 }
 
@@ -128,8 +153,20 @@ extension DetailsViewController: UITableViewDataSource , UITableViewDelegate{
         cell.homeTeam.text = resultsOfFixtures[indexPath.row].eventHomeTeam
         cell.awayTeam.text = resultsOfFixtures[indexPath.row].eventAwayTeam
         cell.matchScore.text = resultsOfFixtures[indexPath.row].eventFTResult
-        cell.homeImg?.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].homeTeamLogo), placeholderImage: UIImage(named: "placeholder"))
-        cell.awayImg?.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].awayTeamLogo), placeholderImage: UIImage(named: "placeholder"))
+        if let homeTeamLogoURLString = resultsOfFixtures[indexPath.row].homeTeamLogo,
+                let homeTeamLogoURL = URL(string: homeTeamLogoURLString) {
+                 cell.homeImg?.sd_setImage(with: homeTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+             } else {
+                 cell.homeImg?.image = UIImage(named: "placeholder")
+             }
+
+             if let awayTeamLogoURLString = resultsOfFixtures[indexPath.row].awayTeamLogo,
+                let awayTeamLogoURL = URL(string: awayTeamLogoURLString) {
+                 cell.awayImg?.sd_setImage(with: awayTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+             } else {
+                 cell.awayImg?.image = UIImage(named: "placeholder")
+             }
+
         
         return cell
     }

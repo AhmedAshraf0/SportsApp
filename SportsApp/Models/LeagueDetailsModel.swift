@@ -9,38 +9,38 @@ import Foundation
 
 struct LeagueDetailsResponse: Codable {
     let success: Int
-    let result: [Fixture]
+    let result: [Fixture]?
 }
 
 struct Fixture: Codable {
-    let eventKey: Int
-    let eventDate: String
-    let eventTime: String
-    let eventHomeTeam: String
-    let homeTeamKey: Int
-    let eventAwayTeam: String
-    let awayTeamKey: Int
-    let eventHalftimeResult: String
-    let eventFinalResult: String
-    let eventFTResult: String
-    let eventStatus: String
-    let countryName: String
-    let leagueName: String
-    let leagueKey: Int
-    let leagueRound: String
-    let leagueSeason: String
-    let eventLive: String
-    let eventStadium: String
-    let eventReferee: String
-    let homeTeamLogo: String
-    let awayTeamLogo: String
-    let eventCountryKey: Int
-    let leagueLogo: String
+    let eventKey: Int?
+    let eventDate: String?
+    let eventTime: String?
+    let eventHomeTeam: String?
+    let homeTeamKey: Int?
+    let eventAwayTeam: String?
+    let awayTeamKey: Int?
+    let eventHalftimeResult: String?
+    let eventFinalResult: String?
+    let eventFTResult: String?
+    let eventStatus: String?
+    let countryName: String?
+    let leagueName: String?
+    let leagueKey: Int?
+    let leagueRound: String?
+    let leagueSeason: String?
+    let eventLive: String?
+    let eventStadium: String?
+    let eventReferee: String?
+    let homeTeamLogo: String?
+    let awayTeamLogo: String?
+    let eventCountryKey: Int?
+    let leagueLogo: String?
     let countryLogo: String?
-    let eventHomeFormation: String
-    let eventAwayFormation: String
-    let fkStageKey: Int
-    let stageName: String
+    let eventHomeFormation: String?
+    let eventAwayFormation: String?
+    let fkStageKey: Int?
+    let stageName: String?
     let leagueGroup: String?
     
     enum CodingKeys: String, CodingKey {
@@ -75,3 +75,4 @@ struct Fixture: Codable {
         case leagueGroup = "league_group"
     }
 }
+

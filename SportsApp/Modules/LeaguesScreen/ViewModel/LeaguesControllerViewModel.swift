@@ -19,7 +19,7 @@ class LeaguesControllerViewModel{
         }
     }
     
-    var bindViewModelToController: ((_ fixtures: [Fixture],_ teams: [Team]) -> ()) = {fixtures, teams in }
+    var bindViewModelToController: ((_ fixtures: [Fixture]?,_ teams: [Team]?) -> ()) = {fixtures, teams in }
     
     var newScreenTitle: String!
     
@@ -34,7 +34,7 @@ class LeaguesControllerViewModel{
 
         networkService.requestFromApi(endPoint: "Fixtures", from: "\(currentYear)-01-01", to: "\(currentYear)-12-30", leagueId: leagueId, completion: {
             (fixtures) in
-            print("fixtures: \(fixtures.count)")
+            print("fixtures: \(fixtures?.count)")
             
             self.leagueDetailsData = fixtures
             self.requestTeamsFromApi(leagueId)
