@@ -45,13 +45,11 @@ class DetailsViewController: UIViewController {
                 for fixture in unwrappedFixtures {
                     if fixture.eventHomeTeam == self.teamName {
                         if let homeStartingLineups = fixture.lineups?.homeTeam?.startingLineups {
-                            print("1eventkey \(fixture.eventKey)")
                             for player in homeStartingLineups {
                                 players.append(player)
                             }
                         }
                         if let homeSubLineups = fixture.lineups?.homeTeam?.substitutes {
-                            print("2eventkey \(fixture.eventKey)")
                             for player in homeSubLineups {
                                 players.append(player)
                             }
@@ -59,13 +57,11 @@ class DetailsViewController: UIViewController {
                         break
                     } else {
                         if let awayStartingLineups = fixture.lineups?.awayTeam?.startingLineups {
-                            print("3eventkey \(fixture.eventKey)")
                             for player in awayStartingLineups {
                                 players.append(player)
                             }
                         }
                         if let awaySubLineups = fixture.lineups?.awayTeam?.substitutes {
-                            print("4eventkey \(fixture.eventKey)")
                             for player in awaySubLineups {
                                 players.append(player)
                             }
@@ -105,7 +101,7 @@ class DetailsViewController: UIViewController {
         //filtering fixtures
         print("filtering started")
         for fixture in fixtures.reversed() {
-            if fixture.eventStatus!.isEmpty{//means upcoming match
+            if fixture.eventStatus!.isEmpty || fixture.eventStatus == "1"{//means upcoming match
                 upcomingFixtures.append(fixture)
             }
             
@@ -118,6 +114,9 @@ class DetailsViewController: UIViewController {
         print("filtering finished")
     }
 
+    func setupDetailsViewTeams( _ teams: [Team]){
+        self.teams = teams
+    }
 }
 
 
@@ -142,17 +141,28 @@ extension DetailsViewController : UICollectionViewDataSource{
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DetailsCollectionViewCell", for: indexPath) as! DetailsCollectionViewCell
             cell.layer.cornerRadius = 25.0
-            cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventHomeTeam
-            cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
-            cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
-            cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate
-            if upcomingFixtures[indexPath.row].awayTeamLogo == nil{
-                cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventAwayTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
-                cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventHomeTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+            if sportType == "Tennis"{
+                cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventFirstPlayer
+                cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventSecondPlayer
+                
+                
+                cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventSecondPlayerLogo ?? ""), placeholderImage: UIImage(named: "player-placeholder"))
+                cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventFirstPlayerLogo ?? ""), placeholderImage: UIImage(named: "player-placeholder"))
             }else{
-                cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
-                cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+                cell.homeTeamLabel.text = upcomingFixtures[indexPath.row].eventHomeTeam
+                cell.awayTeamLabel.text = upcomingFixtures[indexPath.row].eventAwayTeam
+                
+                if upcomingFixtures[indexPath.row].awayTeamLogo == nil{
+                    cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventAwayTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+                    cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].eventHomeTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+                }else{
+                    cell.awayTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].awayTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+                    cell.homeTeamImg.sd_setImage(with: URL(string: upcomingFixtures[indexPath.row].homeTeamLogo ?? ""), placeholderImage: UIImage(named: "placeholder"))
+                }
             }
+            cell.labelTime.text = upcomingFixtures[indexPath.row].eventTime
+            cell.labelDate.text = upcomingFixtures[indexPath.row].eventDate ?? upcomingFixtures[indexPath.row].evenDateStarted
+            
 
             return cell
             
@@ -182,11 +192,10 @@ extension DetailsViewController : UICollectionViewDelegate{
                 teamDetailsViewController.title = teams[indexPath.row].teamName
                 
                 self.navigationController?.pushViewController(teamDetailsViewController, animated: true)
-            }else{
+            }else if sportType == "Basketball"{
                 teamName = teams[indexPath.row].teamName
                 tempTeamUrl = teams[indexPath.row].teamLogo
                 detailsViewModel.requestFromApi(sportType.lowercased(), nil, teams[indexPath.row].teamKey)
-                
             }
         }
     }
@@ -199,38 +208,47 @@ extension DetailsViewController: UITableViewDataSource , UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ResultTableViewCell
-        cell.homeTeam.text = resultsOfFixtures[indexPath.row].eventHomeTeam
-        cell.awayTeam.text = resultsOfFixtures[indexPath.row].eventAwayTeam
-        cell.matchScore.text = resultsOfFixtures[indexPath.row].eventFinalResult
         
-        if resultsOfFixtures[indexPath.row].homeTeamLogo == nil{
-            if let homeTeamLogoURLString = resultsOfFixtures[indexPath.row].eventHomeTeamLogo,
-                    let homeTeamLogoURL = URL(string: homeTeamLogoURLString) {
-                     cell.homeImg?.sd_setImage(with: homeTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
-                 } else {
-                     cell.homeImg?.image = UIImage(named: "placeholder")
-                 }
-
-                 if let awayTeamLogoURLString = resultsOfFixtures[indexPath.row].eventAwayTeamLogo,
-                    let awayTeamLogoURL = URL(string: awayTeamLogoURLString) {
-                     cell.awayImg?.sd_setImage(with: awayTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
-                 } else {
-                     cell.awayImg?.image = UIImage(named: "placeholder")
-                 }
+        cell.matchScore.text = resultsOfFixtures[indexPath.row].eventFinalResult ?? resultsOfFixtures[indexPath.row].eventHomeFinalResult
+        
+        if sportType == "Tennis"{
+            cell.homeTeam.text = resultsOfFixtures[indexPath.row].eventFirstPlayer
+            cell.awayTeam.text = resultsOfFixtures[indexPath.row].eventSecondPlayer
+            cell.awayImg.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].eventSecondPlayerLogo ?? ""), placeholderImage: UIImage(named: "player-placeholder"))
+            cell.homeImg.sd_setImage(with: URL(string: resultsOfFixtures[indexPath.row].eventFirstPlayerLogo ?? ""), placeholderImage: UIImage(named: "player-placeholder"))
         }else{
-            if let homeTeamLogoURLString = resultsOfFixtures[indexPath.row].homeTeamLogo,
-                    let homeTeamLogoURL = URL(string: homeTeamLogoURLString) {
-                     cell.homeImg?.sd_setImage(with: homeTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
-                 } else {
-                     cell.homeImg?.image = UIImage(named: "placeholder")
-                 }
+            cell.homeTeam.text = resultsOfFixtures[indexPath.row].eventHomeTeam
+            cell.awayTeam.text = resultsOfFixtures[indexPath.row].eventAwayTeam
+            
+            if resultsOfFixtures[indexPath.row].homeTeamLogo == nil{
+                if let homeTeamLogoURLString = resultsOfFixtures[indexPath.row].eventHomeTeamLogo,
+                        let homeTeamLogoURL = URL(string: homeTeamLogoURLString) {
+                         cell.homeImg?.sd_setImage(with: homeTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+                     } else {
+                         cell.homeImg?.image = UIImage(named: "placeholder")
+                     }
 
-                 if let awayTeamLogoURLString = resultsOfFixtures[indexPath.row].awayTeamLogo,
-                    let awayTeamLogoURL = URL(string: awayTeamLogoURLString) {
-                     cell.awayImg?.sd_setImage(with: awayTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
-                 } else {
-                     cell.awayImg?.image = UIImage(named: "placeholder")
-                 }
+                     if let awayTeamLogoURLString = resultsOfFixtures[indexPath.row].eventAwayTeamLogo,
+                        let awayTeamLogoURL = URL(string: awayTeamLogoURLString) {
+                         cell.awayImg?.sd_setImage(with: awayTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+                     } else {
+                         cell.awayImg?.image = UIImage(named: "placeholder")
+                     }
+            }else{
+                if let homeTeamLogoURLString = resultsOfFixtures[indexPath.row].homeTeamLogo,
+                        let homeTeamLogoURL = URL(string: homeTeamLogoURLString) {
+                         cell.homeImg?.sd_setImage(with: homeTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+                     } else {
+                         cell.homeImg?.image = UIImage(named: "placeholder")
+                     }
+
+                     if let awayTeamLogoURLString = resultsOfFixtures[indexPath.row].awayTeamLogo,
+                        let awayTeamLogoURL = URL(string: awayTeamLogoURLString) {
+                         cell.awayImg?.sd_setImage(with: awayTeamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+                     } else {
+                         cell.awayImg?.image = UIImage(named: "placeholder")
+                     }
+            }
         }
         
         return cell

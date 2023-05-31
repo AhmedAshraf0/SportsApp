@@ -30,15 +30,25 @@ class LeaguesViewController: UIViewController {
         leaguesViewModel.bindViewModelToController = {
             fixtures, teams in
             print("teams received \(teams?.count ?? -1)")
-            let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
-            
-            if !(fixtures?.isEmpty ?? true) && !(teams?.isEmpty ?? true){
-                detailsViewController.setupDetailsView(fixtures!,teams!)
+            DispatchQueue.main.async {
+                let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
+                
+                if !(fixtures?.isEmpty ?? true) && !(teams?.isEmpty ?? true){
+                    detailsViewController.setupDetailsView(fixtures!,teams!)
+                }else if !(teams?.isEmpty ?? true){
+                    detailsViewController.setupDetailsViewTeams(teams!)
+                    print("else fixtures \(fixtures?.count) teams \(teams?.count)")
+                }
+                
+                if self.sportType == "Tennis"{
+                    print("ho")
+                    detailsViewController.setupDetailsView(fixtures ?? [], [])
+                }
+                detailsViewController.title = self.leaguesViewModel.newScreenTitle
+                detailsViewController.sportType = self.sportType
+                
+                self.navigationController?.pushViewController(detailsViewController, animated: true)
             }
-            detailsViewController.title = self.leaguesViewModel.newScreenTitle
-            detailsViewController.sportType = self.sportType
-            
-            self.navigationController?.pushViewController(detailsViewController, animated: true)
         }
     }
     

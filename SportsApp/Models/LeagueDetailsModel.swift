@@ -15,15 +15,21 @@ struct LeagueDetailsResponse: Codable {
 struct Fixture: Codable {
     let eventKey: Int?
     let eventDate: String?
+    let evenDateStarted: String?
     let eventTime: String?
     let eventHomeTeam: String?
+    let eventFirstPlayer: String?
+    let eventSecondPlayer: String?
     let homeTeamKey: Int?
     let eventHomeTeamLogo: String?
     let eventAwayTeamLogo: String?
+    let eventFirstPlayerLogo: String?
+    let eventSecondPlayerLogo: String?
     let eventAwayTeam: String?
     let awayTeamKey: Int?
     let eventHalftimeResult: String?
     let eventFinalResult: String?
+    let eventHomeFinalResult: String?
     let eventFTResult: String?
     let eventStatus: String?
     let countryName: String?
@@ -49,15 +55,21 @@ struct Fixture: Codable {
     enum CodingKeys: String, CodingKey {
         case eventKey = "event_key"
         case eventDate = "event_date"
+        case evenDateStarted = "event_date_start"
         case eventTime = "event_time"
         case eventHomeTeam = "event_home_team"
+        case eventFirstPlayer = "event_first_player"
+        case eventSecondPlayer = "event_second_player"
         case homeTeamKey = "home_team_key"
         case eventHomeTeamLogo = "event_home_team_logo"
         case eventAwayTeamLogo = "event_away_team_logo"
+        case eventFirstPlayerLogo = "event_first_player_logo"
+        case eventSecondPlayerLogo = "event_second_player_logo"
         case eventAwayTeam = "event_away_team"
         case awayTeamKey = "away_team_key"
         case eventHalftimeResult = "event_halftime_result"
         case eventFinalResult = "event_final_result"
+        case eventHomeFinalResult = "event_home_final_result"
         case eventFTResult = "event_ft_result"
         case eventStatus = "event_status"
         case countryName = "country_name"
