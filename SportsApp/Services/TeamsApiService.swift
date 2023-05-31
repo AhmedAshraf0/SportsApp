@@ -11,8 +11,8 @@ class TeamsApiService{
     private let baseUrl = "https://apiv2.allsportsapi.com/"
     private let apiKey = "06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
     
-    func requestFromApi(endPoint: String, leagueId: Int, completion: @escaping ([Team]) -> ()) {
-        let urlString = "\(baseUrl)football/?met=\(endPoint)&APIkey=\(apiKey)&leagueId=\(leagueId)"
+    func requestFromApi(sportType: String, endPoint: String, leagueId: Int, completion: @escaping ([Team]) -> ()) {
+        let urlString = "\(baseUrl)\(sportType.lowercased())/?met=\(endPoint)&APIkey=\(apiKey)&leagueId=\(leagueId)"
         
         print(urlString)
         guard let url = URL(string: urlString) else {

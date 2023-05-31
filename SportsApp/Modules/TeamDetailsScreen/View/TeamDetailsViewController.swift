@@ -13,8 +13,12 @@ class TeamDetailsViewController: UIViewController {
     private var defenders: [Player] = []
     private var midfielders: [Player] = []
     private var forwrads: [Player] = []
+    var players: [SportPlayer] = []
+    var tempTeamName: String!
+    var tempTeamUrl: String!
     private var isHeartFilled = false
     
+    @IBOutlet weak var coachLabelTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var coachName: UILabel!
     @IBOutlet weak var teamName: UILabel!
@@ -24,13 +28,24 @@ class TeamDetailsViewController: UIViewController {
         super.viewDidLoad()
 
         tableView.dataSource = self
-        coachName.text = team.coaches?.first?.coachName
-        teamName.text = team.teamName
-        if let teamLogoURLString = team.teamLogo, let teamLogoURL = URL(string: teamLogoURLString) {
-            teamImg.sd_setImage(with: teamLogoURL, placeholderImage: UIImage(named: "placeholder"))
-        } else {
-            teamImg.image = UIImage(named: "placeholder")
+        
+        
+        if players.isEmpty && !goalkeepers.isEmpty{
+            coachName.text = team.coaches?.first?.coachName
+            teamName.text = team.teamName
+            
+            if let teamLogoURLString = team.teamLogo, let teamLogoURL = URL(string: teamLogoURLString) {
+                teamImg.sd_setImage(with: teamLogoURL, placeholderImage: UIImage(named: "placeholder"))
+            } else {
+                teamImg.image = UIImage(named: "placeholder")
+            }
+        }else if !players.isEmpty && goalkeepers.isEmpty{
+            coachName.isHidden = true
+            coachLabelTitle.isHidden = true
+            teamName.text = tempTeamName
+            teamImg.sd_setImage(with: URL(string: tempTeamUrl), placeholderImage: UIImage(named: "placeholder"))
         }
+        
 
         let heartImage = UIImage(systemName: "heart")?.withRenderingMode(.alwaysOriginal)
         let heartButton = UIBarButtonItem(image: heartImage, style: .plain, target: self, action: #selector(heartButtonTapped))
@@ -71,66 +86,84 @@ class TeamDetailsViewController: UIViewController {
 
 extension TeamDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        if players.isEmpty && !goalkeepers.isEmpty{
+            return 4
+        }else if !players.isEmpty && goalkeepers.isEmpty{
+            return 1
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return goalkeepers.count
-        case 1:
-            return defenders.count
-        case 2:
-            return midfielders.count
-        case 3:
-            return forwrads.count
-        default:
-            return 0
+        if players.isEmpty{
+            switch section {
+            case 0:
+                return goalkeepers.count
+            case 1:
+                return defenders.count
+            case 2:
+                return midfielders.count
+            case 3:
+                return forwrads.count
+            default:
+                return 0
+            }
+        }else{
+            return players.count
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
-        let player: Player
-        switch indexPath.section {
-        case 0:
-            player = goalkeepers[indexPath.row]
-        case 1:
-            player = defenders[indexPath.row]
-        case 2:
-            player = midfielders[indexPath.row]
-        case 3:
-            player = forwrads[indexPath.row]
-        default:
-            return UITableViewCell()
-        }
-        
-        cell.textLabel?.text = player.playerName
-        cell.detailTextLabel?.text = "Matches Played: \(player.playerMatchPlayed ?? "-") | Goals: \(player.playerGoals ?? "-")"
+        if players.isEmpty{
+            let player: Player
+            switch indexPath.section {
+            case 0:
+                player = goalkeepers[indexPath.row]
+            case 1:
+                player = defenders[indexPath.row]
+            case 2:
+                player = midfielders[indexPath.row]
+            case 3:
+                player = forwrads[indexPath.row]
+            default:
+                return UITableViewCell()
+            }
+            
+            cell.textLabel?.text = player.playerName
+            cell.detailTextLabel?.text = "Matches Played: \(player.playerMatchPlayed ?? "-") | Goals: \(player.playerGoals ?? "-")"
 
-        
-        if let playerImageURLString = player.playerImage, let playerImageURL = URL(string: playerImageURLString) {
-            cell.imageView?.sd_setImage(with: playerImageURL, placeholderImage: UIImage(named: "player-placeholder"))
-        } else {
-            cell.imageView?.image = UIImage(named: "player-placeholder")
+            
+            if let playerImageURLString = player.playerImage, let playerImageURL = URL(string: playerImageURLString) {
+                cell.imageView?.sd_setImage(with: playerImageURL, placeholderImage: UIImage(named: "player-placeholder"))
+            } else {
+                cell.imageView?.image = UIImage(named: "player-placeholder")
+            }
+        }else{
+            cell.textLabel?.text = players[indexPath.row].playerName
+            cell.detailTextLabel?.text = ""
         }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0:
-            return "Goalkeepers"
-        case 1:
-            return "Defenders"
-        case 2:
-            return "Midfielders"
-        case 3:
-            return "Forwards"
-        default:
-            return nil
+        if players.isEmpty{
+            switch section {
+            case 0:
+                return "Goalkeepers"
+            case 1:
+                return "Defenders"
+            case 2:
+                return "Midfielders"
+            case 3:
+                return "Forwards"
+            default:
+                return nil
+            }
+        }else{
+            return "Players"
         }
     }
     

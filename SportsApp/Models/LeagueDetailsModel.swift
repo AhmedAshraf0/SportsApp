@@ -18,6 +18,8 @@ struct Fixture: Codable {
     let eventTime: String?
     let eventHomeTeam: String?
     let homeTeamKey: Int?
+    let eventHomeTeamLogo: String?
+    let eventAwayTeamLogo: String?
     let eventAwayTeam: String?
     let awayTeamKey: Int?
     let eventHalftimeResult: String?
@@ -42,6 +44,7 @@ struct Fixture: Codable {
     let fkStageKey: Int?
     let stageName: String?
     let leagueGroup: String?
+    let lineups: Lineups?
     
     enum CodingKeys: String, CodingKey {
         case eventKey = "event_key"
@@ -49,6 +52,8 @@ struct Fixture: Codable {
         case eventTime = "event_time"
         case eventHomeTeam = "event_home_team"
         case homeTeamKey = "home_team_key"
+        case eventHomeTeamLogo = "event_home_team_logo"
+        case eventAwayTeamLogo = "event_away_team_logo"
         case eventAwayTeam = "event_away_team"
         case awayTeamKey = "away_team_key"
         case eventHalftimeResult = "event_halftime_result"
@@ -73,6 +78,37 @@ struct Fixture: Codable {
         case fkStageKey = "fk_stage_key"
         case stageName = "stage_name"
         case leagueGroup = "league_group"
+        case lineups = "lineups"
+    }
+}
+
+struct Lineups: Codable {
+    let homeTeam: TeamLineup?
+    let awayTeam: TeamLineup?
+    
+    enum CodingKeys: String, CodingKey {
+        case homeTeam = "home_team"
+        case awayTeam = "away_team"
+    }
+}
+
+struct TeamLineup: Codable {
+    let startingLineups: [SportPlayer]?
+    let substitutes: [SportPlayer]?
+    
+    enum CodingKeys: String, CodingKey {
+        case startingLineups = "starting_lineups"
+        case substitutes = "substitutes"
+    }
+}
+
+struct SportPlayer: Codable {
+    let playerName: String?
+    let playerID: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case playerName = "player"
+        case playerID = "player_id"
     }
 }
 

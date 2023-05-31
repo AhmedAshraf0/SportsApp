@@ -486,6 +486,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="coachLabelTitle" destination="Fyd-so-00j" id="5Eg-Gq-UDK"/>
                         <outlet property="coachName" destination="JpB-Pc-z2n" id="Ggy-yN-PND"/>
                         <outlet property="tableView" destination="ZJm-OJ-ssA" id="4vj-7o-Qxr"/>
                         <outlet property="teamImg" destination="Bxh-5T-o5l" id="WmO-WS-x6c"/>

@@ -9,6 +9,7 @@ import UIKit
 import SDWebImage
 
 class LeaguesViewController: UIViewController {
+    private var sportType: String!
     private var leagues: [League]!
     private var filteredDataArray: [League] = []
     
@@ -19,7 +20,7 @@ class LeaguesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Leagues"
+        title = "\(sportType ?? "") Leagues"
         print("hi")
         tableView.dataSource = self
         tableView.delegate = self
@@ -28,21 +29,23 @@ class LeaguesViewController: UIViewController {
         
         leaguesViewModel.bindViewModelToController = {
             fixtures, teams in
-            print("teams received \(teams?.count)")
+            print("teams received \(teams?.count ?? -1)")
             let detailsViewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailsViewController") as! DetailsViewController
             
             if !(fixtures?.isEmpty ?? true) && !(teams?.isEmpty ?? true){
                 detailsViewController.setupDetailsView(fixtures!,teams!)
             }
             detailsViewController.title = self.leaguesViewModel.newScreenTitle
+            detailsViewController.sportType = self.sportType
             
             self.navigationController?.pushViewController(detailsViewController, animated: true)
         }
     }
     
-    func setupLeagueView(_ leagues: [League]!){
+    func setupLeagueView(_ leagues: [League]! , _ sportType: String){
         self.leagues = leagues
         filteredDataArray = leagues
+        self.sportType = sportType
     }
 }
 
@@ -57,17 +60,19 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.text = filteredDataArray[indexPath.row].leagueName
         cell.textLabel?.textAlignment = .center
         
-        if let logoURLString = filteredDataArray[indexPath.row].leagueLogo, let imageURL = URL(string: logoURLString) {
-            cell.imageView?.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
-        } else {
-            cell.imageView?.image = UIImage(named: "placeholder")
+        if sportType == "Football"{
+            if let logoURLString = filteredDataArray[indexPath.row].leagueLogo, let imageURL = URL(string: logoURLString) {
+                cell.imageView?.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
+            } else {
+                cell.imageView?.image = UIImage(named: "placeholder")
+            }
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("pressed at \(indexPath.row)")
-        leaguesViewModel.requestFromApi(filteredDataArray[indexPath.row].leagueKey!)
+        leaguesViewModel.requestFromApi(sportType, filteredDataArray[indexPath.row].leagueKey!, nil)
         leaguesViewModel.newScreenTitle = filteredDataArray[indexPath.row].leagueName
     }
 }

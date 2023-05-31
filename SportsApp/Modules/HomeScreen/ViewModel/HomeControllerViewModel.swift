@@ -9,6 +9,7 @@ import Foundation
 
 class HomeControllerViewModel{
     private var networkService: LeaguesApiService!
+    var sportType: String!
     
     private(set) var leagueData : [League]! {
             didSet {
@@ -22,8 +23,8 @@ class HomeControllerViewModel{
         self.networkService = LeaguesApiService()
     }
     
-    func requestFromApi(){
-        networkService.requestFromApi{ (leagueData) in
+    func requestFromApi(_ sportType: String){
+        networkService.requestFromApi(sportType){ (leagueData) in
             print(leagueData.count)
             self.leagueData = leagueData
         }

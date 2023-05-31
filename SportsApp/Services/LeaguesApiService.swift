@@ -8,10 +8,11 @@
 import Foundation
 
 class LeaguesApiService{
-    let endPoint = "football"
-    let sportsUrl = "https://apiv2.allsportsapi.com/football/?met=Leagues&APIkey=06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
     
-    func requestFromApi(completion : @escaping ([League]) -> ()) {
+    func requestFromApi(_ sportType: String,completion : @escaping ([League]) -> ()) {
+        
+        let sportsUrl = "https://apiv2.allsportsapi.com/\(sportType)/?met=Leagues&APIkey=06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
+        
         guard let url = URL(string: sportsUrl) else {
             print("Invalid URL")
             return
@@ -36,6 +37,7 @@ class LeaguesApiService{
 //                    print(response.result.count)
                 }
             } catch {
+                print(sportsUrl)
                 print("JSON decoding error in LeaguesApiService: \(error.localizedDescription)")
             }
         }

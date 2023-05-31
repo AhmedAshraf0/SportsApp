@@ -32,7 +32,7 @@ class HomeViewController: UIViewController {
             //upgrade ui and navigate to new screen with the list of leagues
             let leaguesViewController = self.storyboard?.instantiateViewController(withIdentifier: "LeaguesViewController") as! LeaguesViewController
             
-            leaguesViewController.setupLeagueView(leagues)
+            leaguesViewController.setupLeagueView(leagues,self.homeViewModel.sportType)
             self.navigationController?.pushViewController(leaguesViewController, animated: true)
         }
     }
@@ -78,6 +78,7 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout{
 extension HomeViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(sports[indexPath.row])
-        homeViewModel.requestFromApi()
+        homeViewModel.sportType = sports[indexPath.row].title
+        homeViewModel.requestFromApi(sports[indexPath.row].title.lowercased())
     }
 }

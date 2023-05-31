@@ -28,21 +28,37 @@ class LeaguesControllerViewModel{
         self.teamsNetworkService = TeamsApiService()
     }
     
-    func requestFromApi(_ leagueId: Int){
+    func requestFromApi(_ sportType: String,_ leagueId: Int? , _ teamId: Int?){
         let currentYear = String(Calendar.current.component(.year, from: Date()))
         print(currentYear)
+        
 
-        networkService.requestFromApi(endPoint: "Fixtures", from: "\(currentYear)-01-01", to: "\(currentYear)-12-30", leagueId: leagueId, completion: {
-            (fixtures) in
-            print("fixtures: \(fixtures?.count)")
-            
-            self.leagueDetailsData = fixtures
-            self.requestTeamsFromApi(leagueId)
-        })
+        
+        if sportType == "football"{
+            networkService.requestFromApi(sportType: sportType, endPoint: "Fixtures", from: "\(currentYear)-01-01", to: "\(currentYear)-12-30", leagueId: leagueId, teamId: teamId, completion: {
+                (fixtures) in
+                print("fixtures: \(fixtures?.count ?? -1)")
+                
+                self.leagueDetailsData = fixtures
+                self.requestTeamsFromApi(sportType, leagueId!)
+            })
+        }else{
+            networkService.requestFromApi(sportType: sportType, endPoint: "Fixtures", from: "\(currentYear)-05-01", to: "\(currentYear)-12-30", leagueId: leagueId, teamId: teamId, completion: {
+                (fixtures) in
+                print("fixtures: nb \(fixtures?.count ?? -1)")
+                
+                self.leagueDetailsData = fixtures
+                if teamId == nil{
+                    self.requestTeamsFromApi(sportType, leagueId!)
+                }else{
+                    self.bindViewModelToController(self.leagueDetailsData,nil)
+                }
+            })
+        }
     }
     
-    func requestTeamsFromApi(_ leagueId: Int){
-        teamsNetworkService.requestFromApi(endPoint: "Teams", leagueId: leagueId, completion: {
+    func requestTeamsFromApi(_ sportType: String, _ leagueId: Int){
+        teamsNetworkService.requestFromApi(sportType: sportType, endPoint: "Teams", leagueId: leagueId, completion: {
             (teams) in
             print("teams: \(teams.count)")
             
