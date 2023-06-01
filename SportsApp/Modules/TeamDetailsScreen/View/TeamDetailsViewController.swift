@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TeamDetailsViewController: UIViewController {
     private var team: Team!
@@ -14,9 +15,12 @@ class TeamDetailsViewController: UIViewController {
     private var midfielders: [Player] = []
     private var forwrads: [Player] = []
     var players: [SportPlayer] = []
-    var tempTeamName: String!
-    var tempTeamUrl: String!
-    private var isHeartFilled = false
+    var tempTeamName: String?
+    var tempTeamUrl: String?
+    var teamKey: Int?
+    private var isHeartFilled: Bool?
+    
+    private var teamDetailsViewModel: TeamDetailsViewModel?
     
     @IBOutlet weak var coachLabelTitle: UILabel!
     @IBOutlet weak var tableView: UITableView!
@@ -28,6 +32,7 @@ class TeamDetailsViewController: UIViewController {
         super.viewDidLoad()
 
         tableView.dataSource = self
+        teamDetailsViewModel = TeamDetailsViewModel(databaseService: DatabaseService.shared)
         
         
         if players.isEmpty && !goalkeepers.isEmpty{
@@ -43,13 +48,22 @@ class TeamDetailsViewController: UIViewController {
             coachName.isHidden = true
             coachLabelTitle.isHidden = true
             teamName.text = tempTeamName
-            teamImg.sd_setImage(with: URL(string: tempTeamUrl), placeholderImage: UIImage(named: "placeholder"))
+            teamImg.sd_setImage(with: URL(string: tempTeamUrl!), placeholderImage: UIImage(named: "placeholder"))
         }
         
-
-        let heartImage = UIImage(systemName: "heart")?.withRenderingMode(.alwaysOriginal)
-        let heartButton = UIBarButtonItem(image: heartImage, style: .plain, target: self, action: #selector(heartButtonTapped))
-        navigationItem.rightBarButtonItem = heartButton
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        if teamDetailsViewModel!.isTeamInFavs(teamKey: teamKey ?? team.teamKey!){
+            isHeartFilled = true
+            let heartImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysOriginal)
+            let heartButton = UIBarButtonItem(image: heartImage, style: .plain, target: self, action: #selector(heartButtonTapped))
+            navigationItem.rightBarButtonItem = heartButton
+        }else{
+            isHeartFilled = false
+            let heartImage = UIImage(systemName: "heart")?.withRenderingMode(.alwaysOriginal)
+            let heartButton = UIBarButtonItem(image: heartImage, style: .plain, target: self, action: #selector(heartButtonTapped))
+            navigationItem.rightBarButtonItem = heartButton
+        }
     }
     
     func setupTeamView(_ team: Team){
@@ -70,17 +84,24 @@ class TeamDetailsViewController: UIViewController {
     
     @objc func heartButtonTapped() {
         if let heartButton = navigationItem.rightBarButtonItem {
-                isHeartFilled.toggle()
-                
-                let heartImageName = isHeartFilled ? "heart.fill" : "heart"
-                let heartImage = UIImage(systemName: heartImageName)?.withRenderingMode(.alwaysOriginal)
-                heartButton.image = heartImage
+            if isHeartFilled! {
+                // Delete team from favorites
+                if teamDetailsViewModel!.deleteFromFavs(teamKey: teamKey ?? team.teamKey!) {
+                    isHeartFilled = false
+                    let heartImage = UIImage(systemName: "heart")?.withRenderingMode(.alwaysOriginal)
+                    heartButton.image = heartImage
+                }
+            } else {
+                // Add team to favorites
+                if teamDetailsViewModel!.insertToFavs(teamKey ?? team.teamKey!, tempTeamName ?? team.teamName!, tempTeamUrl ?? team.teamLogo!) {
+                    isHeartFilled = true
+                    let heartImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysOriginal)
+                    heartButton.image = heartImage
+                }
             }
+        }
         print("ouch")
     }
-
-
-    
 
 }
 

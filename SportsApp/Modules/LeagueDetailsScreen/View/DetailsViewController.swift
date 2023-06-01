@@ -11,6 +11,7 @@ class DetailsViewController: UIViewController {
     var sportType: String!
     private var teamName: String!
     private var tempTeamUrl: String!
+    private var teamKey: Int!
     private var fixtures : [Fixture]!
     private var upcomingFixtures: [Fixture] = []
     private var resultsOfFixtures: [Fixture] = []
@@ -76,6 +77,7 @@ class DetailsViewController: UIViewController {
             
             teamDetailsViewController.title = self.teamName
             teamDetailsViewController.players = players
+            teamDetailsViewController.teamKey = self.teamKey
             teamDetailsViewController.tempTeamName = self.teamName
             teamDetailsViewController.tempTeamUrl = self.tempTeamUrl
             
@@ -193,6 +195,7 @@ extension DetailsViewController : UICollectionViewDelegate{
                 
                 self.navigationController?.pushViewController(teamDetailsViewController, animated: true)
             }else if sportType == "Basketball"{
+                teamKey = teams[indexPath.row].teamKey
                 teamName = teams[indexPath.row].teamName
                 tempTeamUrl = teams[indexPath.row].teamLogo
                 detailsViewModel.requestFromApi(sportType.lowercased(), nil, teams[indexPath.row].teamKey)
