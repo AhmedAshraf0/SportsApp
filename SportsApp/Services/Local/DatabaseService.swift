@@ -10,6 +10,9 @@ import UIKit
 import CoreData
 
 class DatabaseService {
+    private let favEntity = "FavoritesDB"
+    private let leagueEntity = "LeaguesDB"
+    
     static let shared = DatabaseService()
     
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -17,22 +20,40 @@ class DatabaseService {
     
     private init() {}
     
-    func insertToFavs(_ teamKey: Int, _ teamName: String, _ teamLogo: String) -> Bool {
-        let favsEntity = NSEntityDescription.entity(forEntityName: "FavoritesDB", in: context)
-        let mangaedObject = NSManagedObject(entity: favsEntity!, insertInto: context)
-        
-        mangaedObject.setValue(Int64(teamKey), forKey: "id")
-        mangaedObject.setValue(teamName, forKey: "team_name")
-        mangaedObject.setValue(teamLogo, forKey: "team_logo")
-        
-        do {
-            try context.save()
-            print("Success insert")
-            return true
-        } catch let error as NSError {
-            print(error.localizedDescription)
-            return false
+    func insertToFavs(_ isFavoriteDb: Bool, _ teamKey: Int, _ teamName: String, _ teamLogo: String?) -> Bool {
+        if isFavoriteDb{
+            let favsEntity = NSEntityDescription.entity(forEntityName: favEntity, in: context)
+            let mangaedObject = NSManagedObject(entity: favsEntity!, insertInto: context)
+            
+            mangaedObject.setValue(Int64(teamKey), forKey: "id")
+            mangaedObject.setValue(teamName, forKey: "team_name")
+            mangaedObject.setValue(teamLogo, forKey: "team_logo")
+            
+            do {
+                try context.save()
+                print("Success insert")
+                return true
+            } catch let error as NSError {
+                print(error.localizedDescription)
+                return false
+            }
+        }else{
+            let leaguesEntity = NSEntityDescription.entity(forEntityName: leagueEntity, in: context)
+            let mangaedObject = NSManagedObject(entity: leaguesEntity!, insertInto: context)
+            
+            mangaedObject.setValue(Int64(teamKey), forKey: "id")
+            mangaedObject.setValue(teamName, forKey: "leagueId")
+            
+            do {
+                try context.save()
+                print("Success insert")
+                return true
+            } catch let error as NSError {
+                print(error.localizedDescription)
+                return false
+            }
         }
+        
     }
     
     func deleteFromFavs(teamKey: Int) -> Bool {
@@ -68,6 +89,18 @@ class DatabaseService {
             return fetchedResults
         } catch let error as NSError {
             print("Failed to fetch data: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    func fetchLeagues() -> [LeaguesDB]? {
+        let fetchRequest: NSFetchRequest<LeaguesDB> = LeaguesDB.fetchRequest()
+        
+        do {
+            let fetchedResults = try context.fetch(fetchRequest)
+            return fetchedResults
+        } catch let error as NSError {
+            print("Failed to fetch data from leagues: \(error.localizedDescription)")
             return nil
         }
     }

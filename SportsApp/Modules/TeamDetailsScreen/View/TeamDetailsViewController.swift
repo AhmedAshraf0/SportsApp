@@ -93,7 +93,7 @@ class TeamDetailsViewController: UIViewController {
                 }
             } else {
                 // Add team to favorites
-                if teamDetailsViewModel!.insertToFavs(teamKey ?? team.teamKey!, tempTeamName ?? team.teamName!, tempTeamUrl ?? team.teamLogo!) {
+                if teamDetailsViewModel!.insertToFavs(true , teamKey ?? team.teamKey!, tempTeamName ?? team.teamName!, tempTeamUrl ?? team.teamLogo!) {
                     isHeartFilled = true
                     let heartImage = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysOriginal)
                     heartButton.image = heartImage

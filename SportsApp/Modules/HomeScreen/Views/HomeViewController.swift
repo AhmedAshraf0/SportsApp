@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Reachability
 
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     private var homeViewModel : HomeControllerViewModel!
+    private let reachability = try! Reachability()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +30,7 @@ class HomeViewController: UIViewController {
         tabBarController?.tabBar.items?.last?.image = UIImage(systemName: "heart.fill")
         
         homeViewModel.bindViewModelToController = { leagues in
+            self.backupLeagues(leagues)
             print("data received \(leagues.count)")
             //upgrade ui and navigate to new screen with the list of leagues
             let leaguesViewController = self.storyboard?.instantiateViewController(withIdentifier: "LeaguesViewController") as! LeaguesViewController
@@ -35,8 +38,25 @@ class HomeViewController: UIViewController {
             leaguesViewController.setupLeagueView(leagues,self.homeViewModel.sportType)
             self.navigationController?.pushViewController(leaguesViewController, animated: true)
         }
+        
+        do{
+            try reachability.startNotifier()
+        }catch{
+            print("unable to start notifier")
+        }
+        
+    }
+    
+    func backupLeagues(_ leagues:[League]){
+        for league in leagues{
+            DatabaseService.shared.insertToFavs(false, league.leagueKey!, league.leagueName!, nil)
+        }
     }
 
+    deinit {
+        reachability.stopNotifier()
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+    }
 
 }
 
@@ -78,7 +98,21 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout{
 extension HomeViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(sports[indexPath.row])
-        homeViewModel.sportType = sports[indexPath.row].title
-        homeViewModel.requestFromApi(sports[indexPath.row].title.lowercased())
+        if reachability.connection == .unavailable {
+            print("offline")
+            let offlineLeagues = DatabaseService.shared.fetchLeagues()
+            
+            
+            print("data received \(offlineLeagues?.count)")
+            
+            let leaguesViewController = self.storyboard?.instantiateViewController(withIdentifier: "LeaguesViewController") as! LeaguesViewController
+
+            leaguesViewController.setupLeagueViewOffline(offlineLeagues!, sports[indexPath.row].title)
+            self.navigationController?.pushViewController(leaguesViewController, animated: true)
+        }else{
+            print("online")
+            homeViewModel.sportType = sports[indexPath.row].title
+            homeViewModel.requestFromApi(sports[indexPath.row].title.lowercased())
+        }
     }
 }
