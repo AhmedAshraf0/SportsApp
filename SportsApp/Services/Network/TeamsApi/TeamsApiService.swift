@@ -1,26 +1,18 @@
 //
-//  LeagueDetailsApi.swift
+//  TeamsApiService.swift
 //  SportsApp
 //
-//  Created by Ahmed Ashraf on 29/05/2023.
+//  Created by Ahmed Ashraf on 30/05/2023.
 //
 
 import Foundation
 
-class LeagueDetailsApiService {
+class TeamsApiService: TeamsApiServiceProtocol{
     private let baseUrl = "https://apiv2.allsportsapi.com/"
     private let apiKey = "06aa3e1750f0b7baaabb926d54c1772a6f0c32fa0df979eccf5c9b5e2dc008f0"
     
-    func requestFromApi(sportType: String, endPoint: String, from: String, to: String, leagueId: Int?, teamId: Int?, completion: @escaping ([Fixture]?) -> ()) {
-        
-        var urlString = ""
-        
-        if teamId != nil{
-            urlString = "\(baseUrl)\(sportType.lowercased())/?met=\(endPoint)&APIkey=\(apiKey)&from=\(from)&to=\(to)&teamId=\(teamId!)"
-        }else{
-            urlString = "\(baseUrl)\(sportType.lowercased())/?met=\(endPoint)&APIkey=\(apiKey)&from=\(from)&to=\(to)&leagueId=\(leagueId!)"
-        }
-        
+    func requestFromApi(sportType: String, endPoint: String, leagueId: Int, completion: @escaping ([Team]?) -> ()) {
+        let urlString = "\(baseUrl)\(sportType.lowercased())/?met=\(endPoint)&APIkey=\(apiKey)&leagueId=\(leagueId)"
         
         print(urlString)
         guard let url = URL(string: urlString) else {
@@ -35,22 +27,22 @@ class LeagueDetailsApiService {
             }
             
             guard data.count > 0 else {
-                print("Empty response")
+                print("Empty response in teamsapiservice")
+                completion(nil)
                 return
             }
             
             do {
                 let decoder = JSONDecoder()
-                let response = try decoder.decode(LeagueDetailsResponse.self, from: data)
+                let response = try decoder.decode(TeamResponse.self, from: data)
                 DispatchQueue.main.async {
                     completion(response.result)
                 }
             } catch {
-                print("JSON decoding error in LeagueDetailsApiService: \(error.localizedDescription)")
+                print("JSON decoding error in TeamsApiService: \(error.localizedDescription)")
             }
         }
         
         task.resume()
     }
 }
-

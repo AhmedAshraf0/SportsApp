@@ -7,7 +7,7 @@
 
 import Foundation
 
-class LeaguesApiService{
+class LeaguesApiService: LeaguesApiServiceProtocol{
     
     func requestFromApi(_ sportType: String,completion : @escaping ([League]) -> ()) {
         
