@@ -7,6 +7,7 @@
 
 import UIKit
 import SDWebImage
+import Reachability
 
 class LeaguesViewController: UIViewController {
     private var sportType: String!
@@ -14,6 +15,7 @@ class LeaguesViewController: UIViewController {
     private var filteredDataArray: [League] = []
     private var offlineLeagues: [LeaguesDB]!
     private var filterdOfflineLeagues: [LeaguesDB]!
+    private let reachability = try! Reachability()
     
     private var leaguesViewModel: LeaguesControllerViewModel!
     
@@ -21,6 +23,12 @@ class LeaguesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        do{
+            try reachability.startNotifier()
+        }catch{
+            print("unable to start notifier")
+        }
 
         title = "\(sportType ?? "") Leagues"
         print("hi")
@@ -66,11 +74,16 @@ class LeaguesViewController: UIViewController {
         filterdOfflineLeagues = leagues
         self.sportType = sportType
     }
+    
+    deinit {
+        reachability.stopNotifier()
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+    }
 }
 
 extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if filteredDataArray.isEmpty{
+        if reachability.connection == .unavailable{
             return filterdOfflineLeagues.count
         }else{
             return filteredDataArray.count
@@ -79,8 +92,8 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell2", for: indexPath) as! LeagueTableViewCell
-        if filteredDataArray.isEmpty{
-            cell.leagueTitle.text = filterdOfflineLeagues[indexPath.row].leagueId
+        if reachability.connection == .unavailable{
+            cell.leagueTitle.text = filterdOfflineLeagues[indexPath.row].league_name
             cell.imageView?.image = UIImage(named: "placeholder")
         }else{
             cell.leagueTitle.text = filteredDataArray[indexPath.row].leagueName
@@ -88,26 +101,24 @@ extension LeaguesViewController: UITableViewDataSource, UITableViewDelegate {
                 cell.setupLeagueCellImage(filteredDataArray[indexPath.row].leagueLogo)
             }
         }
-//        cell.textLabel?.text = filteredDataArray[indexPath.row].leagueName
-//        cell.textLabel?.textAlignment = .center
-//
-//        if sportType == "Football"{
-//            if let logoURLString = filteredDataArray[indexPath.row].leagueLogo, let imageURL = URL(string: logoURLString) {
-//                cell.imageView?.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
-//            } else {
-//                cell.imageView?.image = UIImage(named: "placeholder")
-//            }
-//        }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("pressed at \(indexPath.row)")
-        if !filteredDataArray.isEmpty{
+        if reachability.connection == .unavailable{
+            let alert = UIAlertController(title: "No Internet Connection",
+                                                  message: "There is no internet connection available.",
+                                                  preferredStyle: .alert)
+                    
+                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                    alert.addAction(okAction)
+                    
+                    present(alert, animated: true, completion: nil)
+            print("offline no action")
+        }else{
             leaguesViewModel.requestFromApi(sportType, filteredDataArray[indexPath.row].leagueKey!, nil)
             leaguesViewModel.newScreenTitle = filteredDataArray[indexPath.row].leagueName
-        }else{
-            print("offline no action")
         }
     }
 }
@@ -126,23 +137,28 @@ extension LeaguesViewController: UISearchBarDelegate {
 
     func filterData(with searchText: String) {
         if searchText.isEmpty {
-            if leagues.isEmpty{
+            if reachability.connection == .unavailable {
                 filterdOfflineLeagues = offlineLeagues
-            }else{
+            } else {
                 filteredDataArray = leagues
             }
         } else {
-            if leagues.isEmpty{
-                filterdOfflineLeagues = offlineLeagues
-            }else{
+            if reachability.connection == .unavailable {
                 filterdOfflineLeagues = offlineLeagues.filter { item in
                     let lowercasedSearchText = searchText.lowercased()
-                    let itemText = item.leagueId!.lowercased()
+                    let itemText = item.league_name?.lowercased() ?? ""
+                    return itemText.contains(lowercasedSearchText)
+                }
+            } else {
+                filteredDataArray = leagues.filter { item in
+                    let lowercasedSearchText = searchText.lowercased()
+                    let itemText = item.leagueName!.lowercased()
                     return itemText.contains(lowercasedSearchText)
                 }
             }
         }
         tableView.reloadData()
     }
+
     
 }

@@ -13,7 +13,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     private var homeViewModel : HomeControllerViewModel!
     private let reachability = try! Reachability()
-    
+    private var sportId: Int!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,11 +47,18 @@ class HomeViewController: UIViewController {
         
     }
     
-    func backupLeagues(_ leagues:[League]){
-        for league in leagues{
-            DatabaseService.shared.insertToFavs(false, league.leagueKey!, league.leagueName!, nil)
+    func backupLeagues(_ leagues: [League]) {
+        DispatchQueue.global(qos: .background).async {
+            
+//            if !(DatabaseService.shared.fetchLeagues(self.sportId)?.isEmpty ?? false){
+                for league in leagues {
+                    DatabaseService.shared.insertToFavs(false , self.sportId , league.leagueKey!, league.leagueName!, nil)
+                }
+//            }
+            
         }
     }
+
 
     deinit {
         reachability.stopNotifier()
@@ -98,10 +105,25 @@ extension HomeViewController : UICollectionViewDelegateFlowLayout{
 extension HomeViewController : UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(sports[indexPath.row])
+        homeViewModel.sportType = sports[indexPath.row].title
+        
+        if self.homeViewModel.sportType == "Football"{
+            self.sportId = 1
+        }else if self.homeViewModel.sportType == "Basketball"{
+            self.sportId = 2
+        }else if self.homeViewModel.sportType == "Tennis"{
+            self.sportId = 3
+        }else{
+            self.sportId = 4
+        }
+        print("sportId \(self.sportId)")
+        
         if reachability.connection == .unavailable {
             print("offline")
-            let offlineLeagues = DatabaseService.shared.fetchLeagues()
+            let offlineLeagues: [LeaguesDB]?
+            homeViewModel.sportType = sports[indexPath.row].title
             
+            offlineLeagues = DatabaseService.shared.fetchLeagues(sportId)
             
             print("data received \(offlineLeagues?.count)")
             
@@ -111,7 +133,6 @@ extension HomeViewController : UICollectionViewDelegate{
             self.navigationController?.pushViewController(leaguesViewController, animated: true)
         }else{
             print("online")
-            homeViewModel.sportType = sports[indexPath.row].title
             homeViewModel.requestFromApi(sports[indexPath.row].title.lowercased())
         }
     }

@@ -15,7 +15,7 @@ class TeamDetailsViewModel{
     }
     
     func insertToFavs(_ isFavorite: Bool, _ teamKey: Int, _ teamName: String, _ teamLogo: String) -> Bool{
-        return databaseService.insertToFavs(isFavorite ,teamKey, teamName, teamLogo)
+        return databaseService.insertToFavs(isFavorite , nil, teamKey, teamName, teamLogo)
     }
     
     func deleteFromFavs(teamKey: Int) -> Bool {

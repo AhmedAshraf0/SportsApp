@@ -20,7 +20,7 @@ class DatabaseService {
     
     private init() {}
     
-    func insertToFavs(_ isFavoriteDb: Bool, _ teamKey: Int, _ teamName: String, _ teamLogo: String?) -> Bool {
+    func insertToFavs(_ isFavoriteDb: Bool,_ sportId: Int?, _ teamKey: Int, _ teamName: String, _ teamLogo: String?) -> Bool {
         if isFavoriteDb{
             let favsEntity = NSEntityDescription.entity(forEntityName: favEntity, in: context)
             let mangaedObject = NSManagedObject(entity: favsEntity!, insertInto: context)
@@ -42,7 +42,8 @@ class DatabaseService {
             let mangaedObject = NSManagedObject(entity: leaguesEntity!, insertInto: context)
             
             mangaedObject.setValue(Int64(teamKey), forKey: "id")
-            mangaedObject.setValue(teamName, forKey: "leagueId")
+            mangaedObject.setValue(teamName, forKey: "league_name")
+            mangaedObject.setValue(Int64(sportId!), forKey: "sport_id")
             
             do {
                 try context.save()
@@ -93,8 +94,9 @@ class DatabaseService {
         }
     }
     
-    func fetchLeagues() -> [LeaguesDB]? {
+    func fetchLeagues(_ sportId: Int) -> [LeaguesDB]? {
         let fetchRequest: NSFetchRequest<LeaguesDB> = LeaguesDB.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "sport_id == %d", sportId)
         
         do {
             let fetchedResults = try context.fetch(fetchRequest)

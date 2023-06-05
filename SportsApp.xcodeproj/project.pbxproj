@@ -245,6 +245,7 @@
 		EB7042DD2A20D230000D6E78 /* SportsApp */ = {
 			isa = PBXGroup;
 			children = (
+				EBC4DA372A2D53F000B8D0F4 /* helpers */,
 				EB70431A2A2146EB000D6E78 /* Services */,
 				EB7043192A2146E1000D6E78 /* Models */,
 				EB7043182A2146D5000D6E78 /* Modules */,
@@ -255,7 +256,6 @@
 				EB7042EC2A20D233000D6E78 /* LaunchScreen.storyboard */,
 				EB7042EF2A20D233000D6E78 /* Info.plist */,
 				EB7042E72A20D230000D6E78 /* SportsApp.xcdatamodeld */,
-				EB7043162A20F27A000D6E78 /* InitialSport.swift */,
 			);
 			path = SportsApp;
 			sourceTree = "<group>";
@@ -359,6 +359,14 @@
 				EB23F9812A24C626006B07C7 /* LeaguesControllerViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EBC4DA372A2D53F000B8D0F4 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				EB7043162A20F27A000D6E78 /* InitialSport.swift */,
+			);
+			path = helpers;
 			sourceTree = "<group>";
 		};
 		EBFF390A2A27EAFA00C77BCA /* Network */ = {
