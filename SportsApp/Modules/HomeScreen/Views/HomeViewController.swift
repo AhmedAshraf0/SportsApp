@@ -28,6 +28,7 @@ class HomeViewController: UIViewController {
         tabBarController?.tabBar.items?.first?.image = UIImage(systemName: "house.fill")
         tabBarController?.tabBar.items?.last?.title = "Favorites"
         tabBarController?.tabBar.items?.last?.image = UIImage(systemName: "heart.fill")
+        navigationController?.navigationBar.tintColor = UIColor.systemOrange
         
         homeViewModel.bindViewModelToController = { leagues in
             self.backupLeagues(leagues)

@@ -17,6 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="selectedImageTintColor" systemColor="systemOrangeColor"/>
                     </tabBar>
                     <connections>
                         <segue destination="XcP-Qd-8Zf" kind="relationship" relationship="viewControllers" id="lTO-ek-b3u"/>
@@ -31,7 +32,9 @@
         <scene sceneID="fJO-g7-gtU">
             <objects>
                 <navigationController id="XcP-Qd-8Zf" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="egB-KK-5KX"/>
+                    <tabBarItem key="tabBarItem" title="Item" id="egB-KK-5KX">
+                        <color key="badgeColor" systemColor="systemOrangeColor"/>
+                    </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="HfL-5H-Nkv">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -48,7 +51,9 @@
         <scene sceneID="UHX-Fw-NdV">
             <objects>
                 <navigationController id="zNS-d9-uxC" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Vft-8o-Tna"/>
+                    <tabBarItem key="tabBarItem" title="Item" id="Vft-8o-Tna">
+                        <color key="badgeColor" systemColor="systemOrangeColor"/>
+                    </tabBarItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ikC-5U-BXS">
                         <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -549,6 +554,9 @@
         </systemColor>
         <systemColor name="systemGray2Color">
             <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
