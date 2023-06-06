@@ -37,10 +37,9 @@ class LeagueDetailsApiServiceTests: XCTestCase {
     
     func testRequestFromApiFailed() {
         let expectation = XCTestExpectation(description: "Calling API Loading....")
-        expectation.isInverted = true
         
         apiService.requestFromApi(sportType: "invalidSport", endPoint: "Fixtures", from: "2023-01-01", to: "2023-12-31", leagueId: nil, teamId: 96) { fixtures in
-            XCTAssertNil(fixtures, "Fixtures should be nil.")
+            XCTAssertEqual(fixtures?.count ?? -1 , 0 , "Fixtures should be zero.")
             expectation.fulfill()
         }
         

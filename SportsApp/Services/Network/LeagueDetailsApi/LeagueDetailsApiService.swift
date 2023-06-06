@@ -36,6 +36,7 @@ class LeagueDetailsApiService: LeagueDetailsApiServiceProtocol {
             
             guard data.count > 0 else {
                 print("Empty response")
+                completion([])
                 return
             }
             
@@ -47,6 +48,7 @@ class LeagueDetailsApiService: LeagueDetailsApiServiceProtocol {
                 }
             } catch {
                 print("JSON decoding error in LeagueDetailsApiService: \(error.localizedDescription)")
+                completion([])
             }
         }
         

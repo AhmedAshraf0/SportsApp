@@ -39,6 +39,7 @@ class LeaguesApiService: LeaguesApiServiceProtocol{
             } catch {
                 print(sportsUrl)
                 print("JSON decoding error in LeaguesApiService: \(error.localizedDescription)")
+                completion([])
             }
         }
         

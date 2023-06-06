@@ -16,8 +16,9 @@ class TeamsApiServiceTests: XCTestCase {
     func testRequestFromApi() {
         let expectation = XCTestExpectation(description: "Calling API Loading....")
         
-        apiService.requestFromApi(sportType: "football", endPoint: "Teams", leagueId: 1234) { teams in
+        apiService.requestFromApi(sportType: "football", endPoint: "Teams", leagueId: 12) { teams in
             XCTAssertNotNil(teams, "Teams should not be nil.")
+            XCTAssertGreaterThan(teams?.count ?? -1 , 0, "Got \(teams?.count ?? -1 ) teams.")
             expectation.fulfill()
         }
         
@@ -27,8 +28,8 @@ class TeamsApiServiceTests: XCTestCase {
     func testRequestFromApiFailed() {
         let expectation = XCTestExpectation(description: "Calling API Loading....")
         
-        apiService.requestFromApi(sportType: "invalidSport", endPoint: "Teams", leagueId: 1234) { teams in
-            XCTAssertNil(teams, "Teams should be nil.")
+        apiService.requestFromApi(sportType: "invalidSport", endPoint: "Teams", leagueId: 12) { teams in
+            XCTAssertEqual(teams?.count ?? -1, 0,"Error in url empty array")
             expectation.fulfill()
         }
         

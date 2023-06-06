@@ -28,10 +28,9 @@ class LeaguesApiServiceTests: XCTestCase {
     
     func testRequestFromApiFailed() {
         let expectation = expectation(description: "Calling API Loading....")
-        expectation.isInverted = true
         
         apiService.requestFromApi("invalidSport") { leagues in
-            XCTAssertNil(leagues, "Leagues should be nil.")
+            XCTAssertEqual(leagues.count, 0,"Error in url empty array")
             expectation.fulfill()
         }
         

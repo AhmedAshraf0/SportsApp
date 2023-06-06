@@ -28,7 +28,7 @@ class TeamsApiService: TeamsApiServiceProtocol{
             
             guard data.count > 0 else {
                 print("Empty response in teamsapiservice")
-                completion(nil)
+                completion([])
                 return
             }
             
@@ -40,6 +40,7 @@ class TeamsApiService: TeamsApiServiceProtocol{
                 }
             } catch {
                 print("JSON decoding error in TeamsApiService: \(error.localizedDescription)")
+                completion([])
             }
         }
         
