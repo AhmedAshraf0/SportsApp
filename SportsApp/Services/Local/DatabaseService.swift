@@ -31,7 +31,6 @@ class DatabaseService {
             
             do {
                 try context.save()
-                print("Success insert")
                 return true
             } catch let error as NSError {
                 print(error.localizedDescription)
@@ -47,7 +46,6 @@ class DatabaseService {
             
             do {
                 try context.save()
-                print("Success insert")
                 return true
             } catch let error as NSError {
                 print(error.localizedDescription)

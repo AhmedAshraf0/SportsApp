@@ -49,15 +49,15 @@ class HomeViewController: UIViewController {
     }
     
     func backupLeagues(_ leagues: [League]) {
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
             
-//            if !(DatabaseService.shared.fetchLeagues(self.sportId)?.isEmpty ?? false){
+            if (DatabaseService.shared.fetchLeagues(self.sportId)?.isEmpty ?? false){
                 for league in leagues {
                     DatabaseService.shared.insertToFavs(false , self.sportId , league.leagueKey!, league.leagueName!, nil)
                 }
-//            }
+            }
             
-        }
+//        }
     }
 
 
